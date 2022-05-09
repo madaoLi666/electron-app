@@ -28,12 +28,26 @@
 
 
 import './index.css';
+import { IpcRendererEvent } from 'electron'
 
 console.log('👋 This message is being logged by "renderer.js", included via webpack');
-//@ts-ignore
-console.log(window?.electronAPI);
-//@ts-ignore
+
 if (window?.electronAPI.setTitle) {
-  //@ts-ignore
   window.electronAPI.setTitle('1');
+}
+
+const filePathElement = document.getElementById('filePath')
+const btn = document.getElementById('btn');
+
+btn.addEventListener('click', async () => {
+  const filePath = await window.electronAPI.openFile()
+  // @ts-ignore
+  filePathElement.innerText = filePath
+})
+
+if (window.electronAPI.handleStarted) {
+  console.log('window.electronAPI.handleStarted');
+  window.electronAPI.handleStarted((_event: IpcRendererEvent, data: any) => {
+    console.log(data);
+  })
 }
